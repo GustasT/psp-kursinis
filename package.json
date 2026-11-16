@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run",
     "dev": "tsx watch src/server.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:setup": "tsx src/db/setup.ts"
   },
   "keywords": [],
   "author": "",
