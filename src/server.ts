@@ -1,6 +1,8 @@
 import { buildApp } from "./app.js";
+import { openDatabase } from "./db/database.js";
 
-const app = buildApp();
+const db = openDatabase();
+const app = buildApp(db);
 
 try {
   await app.listen({
@@ -9,5 +11,6 @@ try {
   });
 } catch (error) {
   app.log.error(error);
+  await app.close();
   process.exit(1);
 }

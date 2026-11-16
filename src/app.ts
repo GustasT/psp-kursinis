@@ -1,7 +1,9 @@
 import Fastify from "fastify";
+import type { DatabaseSync } from "node:sqlite";
 import reservationRoutes from "./routes/reservations.js";
+import equipmentRoutes from "./routes/equipment.js";
 
-export function buildApp() {
+export function buildApp(db: DatabaseSync) {
   const app = Fastify({
     logger: true,
   });
@@ -11,6 +13,11 @@ export function buildApp() {
   });
 
   app.register(reservationRoutes);
+  app.register(equipmentRoutes, { db });
+
+  app.addHook("onClose", async () => {
+    db.close();
+  });
 
   return app;
 }

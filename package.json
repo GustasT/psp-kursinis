@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --reporter=tree",
     "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "db:setup": "tsx src/db/setup.ts"
