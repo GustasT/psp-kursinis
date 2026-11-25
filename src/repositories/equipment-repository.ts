@@ -24,3 +24,19 @@ export function listEquipment(db: DatabaseSync, organizationId: string) {
     )
     .all(organizationId);
 }
+
+export function findEquipment(
+  db: DatabaseSync,
+  organizationId: string,
+  equipmentId: string,
+) {
+  return db
+    .prepare(
+      `
+    SELECT id, branch_id AS branchId, name
+    FROM equipment
+    WHERE organization_id = ? AND id = ?
+  `,
+    )
+    .get(organizationId, equipmentId);
+}

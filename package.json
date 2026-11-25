@@ -14,9 +14,11 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "fastify": "^5.12.8"
+    "fastify": "^5.12.8",
+    "luxon": "^3.7.2"
   },
   "devDependencies": {
+    "@types/luxon": "^3.7.6",
     "@types/node": "^24.19.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
