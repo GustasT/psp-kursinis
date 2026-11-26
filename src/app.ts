@@ -12,7 +12,7 @@ export function buildApp(db: DatabaseSync) {
     return { status: "ok" };
   });
 
-  app.register(reservationRoutes);
+  app.register(reservationRoutes, { db });
   app.register(equipmentRoutes, { db });
 
   app.addHook("onClose", async () => {
