@@ -1,0 +1,113 @@
+{
+  "info": {
+    "name": "PSP – rezervacijų demonstracija",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:3000"
+    },
+    {
+      "key": "startsAt",
+      "value": "2026-11-27T14:00:00+02:00"
+    },
+    {
+      "key": "reservationId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Treniruokliai – A",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/equipment",
+        "header": [
+          {
+            "key": "X-Organization-Id",
+            "value": "club-a"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sukurti rezervaciją – A",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/reservations",
+        "header": [
+          {
+            "key": "X-Organization-Id",
+            "value": "club-a"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"memberId\": \"member-1\",\n  \"equipmentId\": \"equipment-1\",\n  \"startsAt\": \"{{startsAt}}\",\n  \"durationMinutes\": 20\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Nario rezervacijos – A",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/members/member-1/reservations",
+        "header": [
+          {
+            "key": "X-Organization-Id",
+            "value": "club-a"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Nario rezervacijos – B",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/members/member-1/reservations",
+        "header": [
+          {
+            "key": "X-Organization-Id",
+            "value": "club-b"
+          }
+        ]
+      }
+    },
+    {
+      "name": "B bando atšaukti A rezervaciją – 404",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/reservations/{{reservationId}}/cancel",
+        "header": [
+          {
+            "key": "X-Organization-Id",
+            "value": "club-b"
+          }
+        ]
+      }
+    },
+    {
+      "name": "A atšaukia savo rezervaciją – 200",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/reservations/{{reservationId}}/cancel",
+        "header": [
+          {
+            "key": "X-Organization-Id",
+            "value": "club-a"
+          }
+        ]
+      }
+    }
+  ]
+}
