@@ -129,3 +129,24 @@ export function getReservedMinutes(
 
   return result.minutes;
 }
+
+export function cancelReservation(
+  db: DatabaseSync,
+  organizationId: string,
+  reservationId: string,
+  now = Date.now(),
+) {
+  return db
+    .prepare(
+      `
+    UPDATE reservations
+    SET status = 'CANCELLED'
+    WHERE organization_id = ?
+      AND id = ?
+      AND status = 'CONFIRMED'
+      AND starts_at > ?
+    RETURNING id, status
+  `,
+    )
+    .get(organizationId, reservationId, now);
+}

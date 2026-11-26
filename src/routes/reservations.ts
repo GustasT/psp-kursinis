@@ -5,6 +5,11 @@ import {
   createReservation,
   ReservationError,
 } from "../services/reservation-service.js";
+import { findMember } from "../repositories/member-repository.js";
+import {
+  cancelReservation,
+  listMemberReservations,
+} from "../repositories/reservation-repository.js";
 
 type ReservationBody = {
   memberId: string;
@@ -81,6 +86,68 @@ const reservationRoutes: FastifyPluginAsync<{ db: DatabaseSync }> = async (
           message: error.message,
         });
       }
+    },
+  );
+
+  app.get<{
+    Headers: { "x-organization-id": string };
+    Params: { memberId: string };
+  }>(
+    "/members/:memberId/reservations",
+    {
+      schema: {
+        headers: {
+          type: "object",
+          required: ["x-organization-id"],
+          properties: {
+            "x-organization-id": { type: "string", minLength: 1 },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      const organizationId = request.headers["x-organization-id"];
+      const { memberId } = request.params;
+
+      const member = findMember(db, organizationId, memberId);
+
+      if (!member) {
+        return reply.code(404).send({
+          code: "MEMBER_NOT_FOUND",
+          message: "Narys nerastas.",
+        });
+      }
+
+      return listMemberReservations(db, organizationId, memberId);
+    },
+  );
+
+  app.post<{ Params: { reservationId: string } }>(
+    "/reservations/:reservationId/cancel",
+    async (request, reply) => {
+      const organizationId = request.headers["x-organization-id"];
+
+      if (typeof organizationId !== "string" || !organizationId.trim()) {
+        return reply.code(400).send({
+          code: "ORGANIZATION_REQUIRED",
+          message: "Trūksta klubo antraštės.",
+        });
+      }
+
+      const reservation = cancelReservation(
+        db,
+        organizationId,
+        request.params.reservationId,
+      );
+
+      if (!reservation) {
+        return reply.code(404).send({
+          code: "CANCELLABLE_RESERVATION_NOT_FOUND",
+          message: "Atšaukiama rezervacija nerasta.",
+        });
+      }
+
+      return reservation;
     },
   );
 };
